@@ -8,7 +8,7 @@ import Auth from '../utils/auth';
 
 const LoginForm = (props) => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
-  const [Login, { error, data }] = useMutation(LOGIN_USER);
+  const [login, { error, data }] = useMutation(LOGIN_USER);
 
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -29,7 +29,7 @@ const LoginForm = (props) => {
     }
 
     try {
-      const { data } = await Login({
+      const { data } = await login({
         variables: userFormData,
       });
 
@@ -38,7 +38,7 @@ const LoginForm = (props) => {
       }
 
       console.log(user);
-      Auth.Login(data.login.token);
+      Auth.login(data.login.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
