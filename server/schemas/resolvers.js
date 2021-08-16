@@ -1,5 +1,5 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Book } = require('../models');
+const { User } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
@@ -9,7 +9,10 @@ const resolvers = {
     },
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id });
+        const userData = await User.findOne({ _id: context.user._id })
+          .select('-__v -password')
+
+        return userData;
       }
       throw new AuthenticationError('Please log in');
     }
@@ -19,20 +22,20 @@ const resolvers = {
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
-      
+
       return { token, user };
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError('No credentials');
+        throw new AuthenticationError('Credentials not found');
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError('No credentials');
+        throw new AuthenticationError('Credentials not found');
       }
 
       const token = signToken(user);
@@ -57,7 +60,7 @@ const resolvers = {
       if (context.user) {
         return await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: {bookId: args.bookId } } },
+          { $pull: { savedBooks: { bookId: args.bookId } } },
           { new: true }
         );
       }
