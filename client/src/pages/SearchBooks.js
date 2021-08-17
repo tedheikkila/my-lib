@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
 
-import { useQuery } from '@apollo/client';
 import { useMutation } from '@apollo/client';
 import Auth from '../utils/auth';
 import { searchGoogleBooks } from '../utils/queries';
@@ -13,7 +12,7 @@ const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
-  const [saveBook, setSaveBook] = useMutation(SAVE_BOOK);
+  const [saveBook, setSaveBook ] = useMutation(SAVE_BOOK);
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
@@ -132,8 +131,8 @@ const SearchBooks = () => {
                       className='btn-block btn-info'
                       onClick={() => handleSaveBook(book.bookId)}>
                       {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
-                        ? 'This book has already been saved!'
-                        : 'Save this Book!'}
+                        ? 'This book has already been saved'
+                        : 'Save this Book'}
                     </Button>
                   )}
                 </Card.Body>
